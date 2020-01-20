@@ -15,6 +15,7 @@ class MancalaBoard():
 
     def __init__(self,player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
         self.player = player
+        self.nextpossible = []
         #setting the board in player's perspective
         if self.player == 1:    # if player is player1
             self.playerMancala = player1Mancala
@@ -26,40 +27,25 @@ class MancalaBoard():
             self.playerMarbles = player2Marbles
             self.opponentMancala = player1Mancala
             self.opponentMarbles = player1Marbles
-            
-
-     
-def nextBoard(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles, slot):
-    slot = slot - 1 
-    if player == 1:
-        playerMancala = player1Mancala
-        playerMarbles = player1Marbles
-        opponentMancala = player2Mancala
-        opponentMarbles = player2Marbles
-    else:
-        playerMancala = player2Mancala
-        playerMarbles = player2Marbles
-        opponentMancala = player1Mancala
-        opponentMarbles = player1Marbles
-
-    marbleSlot = playerMarbles[slot]
-    playerMarbles[slot] = 0
     
-    
-    
+    def findNextMoves(self):
+        # function to populate nextpossible 
+        pass
+
+    #print current state of the board
+    def printBoard(self):
+        print("---Current State ---")
+        print("player: {}".format(self.player))
+        print(self.playerMancala)
+        print(self.playerMarbles)
+        print(self.opponentMancala)
+        print(self.opponentMarbles)
 
 
-    print("---Currrent State --- ")
-    print(player)
-    print("Available marbles: {}".format(marbleSlot))
-    print(playerMancala)
-    print(playerMarbles)
-    print(opponentMancala)
-    print(opponentMarbles)
 
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
-    nextBoard(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles, 5)
-
+    board1 = MancalaBoard(player,player1Mancala, player1Marbles, player2Mancala, player2Marbles)
+    board1.printBoard()
 
 player = int(input())
 mancala1 = int(input())
