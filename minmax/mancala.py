@@ -12,7 +12,6 @@ Example of input:
 """
 
 class MancalaBoard():
-
     def __init__(self,player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
         self.player = player
         self.nextpossible = []
@@ -41,11 +40,38 @@ class MancalaBoard():
         print(self.opponentMancala)
         print(self.opponentMarbles)
 
+def nextBoard(MancalaBoard,slot):
+    player = MancalaBoard.player
+    playerMancala = MancalaBoard.playerMancala
+    playerMarbles = MancalaBoard.playerMarbles
+    opponentMancala = MancalaBoard.opponentMancala
+    opponentMarbles = MancalaBoard.opponentMarbles
+    
+    # grabbing marble from designated slot
+    slotMarbles = MancalaBoard.playerMarbles[slot-1]
+    playerMarbles[slot-1] = 0
+
+    
+    # distributing marbles
+    nextSlot = slot
+    while slotMarbles > 0:
+        
+
+    print("---state of next board --- ")
+    print("slot selected: {}".format(slot))
+    print("Marbles found in slot: {}".format(slotMarbles))
+
+    print(player)
+    print(playerMancala)
+    print(playerMarbles)
+    print(opponentMancala)
+    print(opponentMarbles)
+
 
 
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
     board1 = MancalaBoard(player,player1Mancala, player1Marbles, player2Mancala, player2Marbles)
-    board1.printBoard()
+    nextBoard(board1,4)
 
 player = int(input())
 mancala1 = int(input())
