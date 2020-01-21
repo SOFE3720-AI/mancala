@@ -31,8 +31,8 @@ class MancalaBoard():
     def findNextMoves(self):
         for i in range(1,7):
             if self.playerMarbles[i-1]>0:
-                nextBoard(self,i,False)
-            
+                tempResultBoard = nextBoard(self,i,False)
+                tempResultBoard.printBoard()
 
     #print current state of the board
     def printBoard(self):
@@ -43,17 +43,17 @@ class MancalaBoard():
         print(self.opponentMancala)
         print(self.opponentMarbles)
 
-def nextBoard(MancalaBoard,slot,repeat):
+def nextBoard(currentBoard,slot,repeat):
     # chosen slot must not be empty
     repeat = False
-    player = MancalaBoard.player
-    playerMancala = MancalaBoard.playerMancala
-    playerMarbles = MancalaBoard.playerMarbles.copy()
-    opponentMancala = MancalaBoard.opponentMancala
-    opponentMarbles = MancalaBoard.opponentMarbles.copy()
+    player = currentBoard.player
+    playerMancala = currentBoard.playerMancala
+    playerMarbles = currentBoard.playerMarbles.copy()
+    opponentMancala = currentBoard.opponentMancala
+    opponentMarbles = currentBoard.opponentMarbles.copy()
 
     # grabbing marble from designated slot
-    slotMarbles = MancalaBoard.playerMarbles[slot-1]
+    slotMarbles = currentBoard.playerMarbles[slot-1]
     playerMarbles[slot-1] = 0
 
     boardArray = []
@@ -84,23 +84,16 @@ def nextBoard(MancalaBoard,slot,repeat):
     if (nextSlot-1) == 6:
         repeat = True
     
-    if repeat == False: 
+    if repeat == True:
+        boardResult = MancalaBoard(player, playerMancala, playerMarbles, opponentMancala, opponentMarbles)
+    else:
         if player == 1:
-            boardResult = MancalaBoard(1,playerMancala, playerMarbles, opponentMancala, opponentMarbles)
-        else:
-            boardResult = MancalaBoard(2,opponentMancala, opponentMarbles, playerMancala, playerMarbles)
+            player = 2
+        else: 
+            player == 1
+        boardResult = MancalaBoard(player, opponentMancala, opponentMarbles, playerMancala, playerMarbles)
     
-        
-    print("---state of next board --- ")
-    print("slot selected: {}".format(slot))
-
-    print(player)
-    print(playerMancala)
-    print(playerMarbles)
-    print(opponentMancala)
-    print(opponentMarbles)
-    print("Repeat: {}".format(repeat))
-
+    return boardResult
 
 
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
