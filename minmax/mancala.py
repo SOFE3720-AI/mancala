@@ -5,11 +5,13 @@ Example of input:
 
 1
 0
-4 4 4 4 4 4
+4 4 2 0 0 4
 0
-4 4 4 4 4 4
+4 4 4 4 6 4
 
 """
+
+#TODO: add nextBoard function
 
 class MancalaBoard():
     def __init__(self,player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
@@ -26,10 +28,13 @@ class MancalaBoard():
             self.playerMarbles = player2Marbles
             self.opponentMancala = player1Mancala
             self.opponentMarbles = player1Marbles
-    
+
     def findNextMoves(self):
-        # function to populate nextpossible 
-        pass
+        for i in range(6):
+            pass
+
+        # function to populate nextpossible
+
 
     #print current state of the board
     def printBoard(self):
@@ -41,25 +46,42 @@ class MancalaBoard():
         print(self.opponentMarbles)
 
 def nextBoard(MancalaBoard,slot):
+    # chosen slot must not be empty
     player = MancalaBoard.player
     playerMancala = MancalaBoard.playerMancala
     playerMarbles = MancalaBoard.playerMarbles
     opponentMancala = MancalaBoard.opponentMancala
     opponentMarbles = MancalaBoard.opponentMarbles
-    
+
     # grabbing marble from designated slot
     slotMarbles = MancalaBoard.playerMarbles[slot-1]
     playerMarbles[slot-1] = 0
 
-    
-    # distributing marbles
+    boardArray = []
+    boardArray.extend(playerMarbles)
+    boardArray.append(playerMancala)
+    boardArray.extend(opponentMarbles)
+
     nextSlot = slot
     while slotMarbles > 0:
-        
+        nextboardSlot = nextSlot % 13
+        slotMarbles -= 1
+        boardArray[nextboardSlot] += 1
+        nextSlot += 1
+
+        if slotMarbles == 0 and nextboardSlot < 6: 
+            if boardArray[nextboardSlot] == 1:
+                stealingScore = boardArray[nextboardSlot+7]
+                boardArray[nextboardSlot+7] = 0
+                boardArray[6] += stealingScore
+
+
+    playerMarbles = boardArray[0:6]
+    playerMancala = boardArray[6]
+    opponentMarbles = boardArray[7:13]
 
     print("---state of next board --- ")
     print("slot selected: {}".format(slot))
-    print("Marbles found in slot: {}".format(slotMarbles))
 
     print(player)
     print(playerMancala)
@@ -69,9 +91,10 @@ def nextBoard(MancalaBoard,slot):
 
 
 
+
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
     board1 = MancalaBoard(player,player1Mancala, player1Marbles, player2Mancala, player2Marbles)
-    nextBoard(board1,4)
+    nextBoard(board1,3)
 
 player = int(input())
 mancala1 = int(input())
