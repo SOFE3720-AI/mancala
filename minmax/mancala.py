@@ -10,12 +10,37 @@ Example of input:
 4 4 4 4 4 4
 
 """
-#TODO: findNextMoves
+#TODO: minmax only returns score value, not the slot to be chosen
+
+
+
+
+
+def minmax(board, depth, trackingPlayer):
+    if depth == 0:
+        if board.player == trackingPlayer:
+            return board.playerMancala 
+        else:
+            return board.opponentMancala
+    board.findNextMoves()
+    if board.player == trackingPlayer:
+        value = -9999
+        for child in board.nextpossible.values():
+            value = max(value,minmax(child,depth-1,trackingPlayer))
+        return value
+    else:
+        value = 9999
+        for child in board.nextpossible.values():
+            value = min(value, minmax(child,depth-1,trackingPlayer))
+        return value
+            
+
+   
 
 class MancalaBoard():
     def __init__(self,player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
         self.player = player
-        self.nextpossible = []
+        self.nextpossible = {}
         #setting the board in player's perspective
         if self.player == 1:    # if player is player1
             self.playerMancala = player1Mancala
@@ -27,22 +52,28 @@ class MancalaBoard():
             self.playerMarbles = player2Marbles
             self.opponentMancala = player1Mancala
             self.opponentMarbles = player1Marbles
-
-
+        
     def findNextMoves(self):            # cannot put inside init without boundary to stop 
         for i in range(1,7):
             if self.playerMarbles[i-1]>0:
                 tempResultBoard = nextBoard(self,i,False)
-                self.nextpossible.append(tempResultBoard)
+                self.nextpossible[i] = tempResultBoard 
 
     #print current state of the board
     def printBoard(self):
         print("---Current State ---")
         print("player: {}".format(self.player))
-        print(self.playerMancala)
-        print(self.playerMarbles)
-        print(self.opponentMancala)
-        print(self.opponentMarbles)
+        if player == 1: 
+            print(self.playerMancala)
+            print(self.playerMarbles)
+            print(self.opponentMancala)
+            print(self.opponentMarbles)
+        else:
+            print(self.opponentMancala)
+            print(self.opponentMarbles)
+            print(self.playerMancala)
+            print(self.playerMarbles)
+        
 
 def nextBoard(currentBoard,slot,repeat):
     # chosen slot must not be empty
@@ -89,16 +120,14 @@ def nextBoard(currentBoard,slot,repeat):
         if player == 1:
             player = 2
         else: 
-            player == 1
+            player = 1
         boardResult = MancalaBoard(player, opponentMancala, opponentMarbles, playerMancala, playerMarbles)
     
     return boardResult
 
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
-    board1 = MancalaBoard(player,player1Mancala, player1Marbles, player2Mancala, player2Marbles)
-    board1.findNextMoves()
-    for board in board1.nextpossible:
-        board.printBoard()
+    board1 = MancalaBoard(player,player1Mancala,player1Marbles,player2Mancala,player2Marbles)
+    print(minmax(board1,5,1))
     
 
 player = int(input())
