@@ -1,20 +1,4 @@
 
-"""
-After ideal moves
-
-1
-2
-4 4 0 5 5 0
-1
-0 1 7 7 6 6
-
-1
-0
-6 3 3 4 4 4
-0
-4 4 4 4 4 4
-"""
-
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
     if player == '1':
         marbles = player1Marbles
@@ -47,13 +31,14 @@ def createBoard(marbles, score, enemyMarbles, enemyScore):
 
     return board
 
-def getScore(board, end):
+# Gets score of a move
+def getScore(board, end, depth):
     if sum(board[:7]) > sum(board[7:]) and end:
-        score = 100
+        score = 100 + depth
     elif sum(board[:7]) < sum(board[7:]) and end:
-        score = -100
+        score = -100 - depth
     else:
-        score = (board[6] - board[13])
+        score = (board[6] - board[13])*2 + (sum(board[:7]) - sum(board[7:]))
     
     return score
     # Find better way to score moves and add how many turns to win
@@ -64,7 +49,7 @@ def getScore(board, end):
 def minimax(board, maxPlayer, depth, alpha, beta):
     end = checkGameStatus(board)
     if depth == 0 or end:
-        score = getScore(board, end)
+        score = getScore(board, end, depth)
 
         return score, None
 
