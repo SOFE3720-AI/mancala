@@ -9,6 +9,14 @@ Example of input:
 0
 4 4 4 4 4 4
 
+
+2
+0
+4 4 4 4 4 4
+0
+2 0 0 0 2 0
+
+
 """
 #TODO: minmax only returns score value, not the slot to be chosen
 
@@ -17,30 +25,48 @@ Example of input:
 
 
 def minmax(board, depth, trackingPlayer):
+    
     if depth == 0:
         if board.player == trackingPlayer:
-            return board.playerMancala 
+            return board.playerMancala - board.opponentMancala
         else:
-            return board.opponentMancala
+            return board.opponentMancala - board.playerMancala
     board.findNextMoves()
+
+    if not board.nextpossible:
+        if board.player == trackingPlayer:
+            return board.playerMancala - board.opponentMancala
+        else:
+            return board.opponentMancala - board.playerMancala
+  
     if board.player == trackingPlayer:
         value = -9999
-        for child in board.nextpossible.values():
-            value = max(value,minmax(child,depth-1,trackingPlayer))
+        maxkey = None
+        
+        for slot in board.nextpossible:
+            if board.nextpossible[slot] != None: 
+                childvalue = minmax(board.nextpossible[slot], depth-1, trackingPlayer)
+                if childvalue > value:
+                    value = childvalue
+                    maxkey = slot
         return value
+        
     else:
-        value = 9999
-        for child in board.nextpossible.values():
-            value = min(value, minmax(child,depth-1,trackingPlayer))
+        value = -9999
+        maxkey = None
+        for slot in board.nextpossible:
+            if board.nextpossible[slot] != None: 
+                childvalue = minmax(board.nextpossible[slot], depth-1, trackingPlayer)
+                if childvalue < value:
+                    value = childvalue
+                    maxkey = slot
         return value
-            
-
-   
+  
 
 class MancalaBoard():
     def __init__(self,player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
         self.player = player
-        self.nextpossible = {}
+        self.nextpossible = [None]*6
         #setting the board in player's perspective
         if self.player == 1:    # if player is player1
             self.playerMancala = player1Mancala
@@ -54,10 +80,10 @@ class MancalaBoard():
             self.opponentMarbles = player1Marbles
         
     def findNextMoves(self):            # cannot put inside init without boundary to stop 
-        for i in range(1,7):
-            if self.playerMarbles[i-1]>0:
+        for i in range(0,6):
+            if self.playerMarbles[i] > 0:
                 tempResultBoard = nextBoard(self,i,False)
-                self.nextpossible[i] = tempResultBoard 
+                self.nextpossible[i] = tempResultBoard
 
     #print current state of the board
     def printBoard(self):
@@ -119,15 +145,17 @@ def nextBoard(currentBoard,slot,repeat):
     else:
         if player == 1:
             player = 2
+            boardResult = MancalaBoard(player, playerMancala, playerMarbles, opponentMancala, opponentMarbles)
         else: 
             player = 1
-        boardResult = MancalaBoard(player, opponentMancala, opponentMarbles, playerMancala, playerMarbles)
+            boardResult = MancalaBoard(player, opponentMancala, opponentMarbles, playerMancala, playerMarbles)
     
     return boardResult
 
 def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player2Marbles):
     board1 = MancalaBoard(player,player1Mancala,player1Marbles,player2Mancala,player2Marbles)
-    print(minmax(board1,5,1))
+    print(minmax(board1,2,1))
+
     
 
 player = int(input())
