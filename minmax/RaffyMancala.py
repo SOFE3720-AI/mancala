@@ -58,7 +58,7 @@ def getScore(board, end, depth):
     elif (sum(board[:7]) < sum(board[7:]) and end) or board[13] > 24:
         score = -100 - depth
     else:
-        score = (board[6] - board[13])*2 + (sum(board[:7]) - sum(board[7:]))
+        score = (board[6] - board[13]) + (sum(board[:7]) - sum(board[7:])) + (24 - board[13]) + (board[6] - 24)
     
     return score
 
