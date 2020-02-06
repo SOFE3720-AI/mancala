@@ -12,9 +12,19 @@ def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player
         enemyScore = player1Mancala
     
     board = createBoard(marbles, score, enemyMarbles, enemyScore)
-    select = minimax(board, True, 8, -10000, 10000)
-
-    print(select[1])
+    turn1 = [4,4,4,4,4,4,0,4,4,4,4,4,4,0]
+    turn2 = [4,4,0,5,5,5,1,4,4,4,4,4,4,0]
+    turn3 = [5,0,6,6,5,5,1,4,4,0,5,5,0,2]
+    
+    if board == turn1:
+        print(3)
+    elif board == turn2:
+        print(6)
+    elif board == turn3:
+        print(1)
+    else:
+        select = minimax(board, True, 8, -10000, 10000)
+        print(select[1])
 
 # Creates the Mancala board
 def createBoard(marbles, score, enemyMarbles, enemyScore):
@@ -31,19 +41,28 @@ def createBoard(marbles, score, enemyMarbles, enemyScore):
 
     return board
 
+
+# Possible Heuristic
+# (sum(board[:7]) - sum(board[7:])) -> # of your marble - enemy marble (including mancala)
+# board[6] - board[13] -> your mancala - enemy mancala
+# (24 - board[13]) -> how far enemy is close to winning
+# (board[6]-24) -> how close you are to winning
+# board[5] -> # of marbles in 6th hole (i see the top two guys always storing in 6th hole)
+# board[3] -> # of marbles in 4th hole (usually a good hole to store marbles)
+# (sum(board[:6]) - sum(board[7:13])) -> # of your marble - enemy marble (not including mancala; usually performs worst) 
+
 # Gets score of a move
 def getScore(board, end, depth):
-    if sum(board[:7]) > sum(board[7:]) and end:
+    if (sum(board[:7]) > sum(board[7:]) and end) or board[6] > 24:
         score = 100 + depth
-    elif sum(board[:7]) < sum(board[7:]) and end:
+    elif (sum(board[:7]) < sum(board[7:]) and end) or board[13] > 24:
         score = -100 - depth
     else:
         score = (board[6] - board[13])*2 + (sum(board[:7]) - sum(board[7:]))
     
     return score
-    # Find better way to score moves and add how many turns to win
-    #score = (sum(board[:7]) - sum(board[7:]))
-    #score = board[6] - board[13]
+
+
 
 # Minimax algorithm: Checks for all possible cases then find highest score achievable
 def minimax(board, maxPlayer, depth, alpha, beta):
