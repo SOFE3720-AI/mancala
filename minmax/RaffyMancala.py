@@ -25,24 +25,11 @@ def printNextMove(player, player1Mancala, player1Marbles, player2Mancala, player
     elif board == turn3:
         print(1)
     else:
-        # To find move count
-        moves = findMoves(board, True)
         depth = 8
-        # Iterative deepening
-        if (sum(board[:6]) + sum(board[7:13])) < 12:
-            depth +=5
-        elif (sum(board[:6]) + sum(board[7:13])) < 18:
-            depth +=4
-        elif (sum(board[:6]) + sum(board[7:13])) < 20:
-            depth +=3
-        elif ((sum(board[:6]) + sum(board[7:13])) < 23) and len(moves) < 5:
-            depth +=2
-        elif (sum(board[:6]) + sum(board[7:13])) < 23:
-            depth +=1
-        elif ((sum(board[:6]) + sum(board[7:13])) < 30) and len(moves) < 5:
-            depth +=1
-
-
+        moves = findMoves(board, True)
+        if ((sum(board[:6]) + sum(board[7:13])) < 26) and len(moves)<5:
+            depth = 9
+            
         select = minimax(board, True, depth, -10000, 10000)
         print(select[1])
 
@@ -76,7 +63,7 @@ def getScore(board, end, depth,maxPlayer):
     if (sum(board[:7]) > sum(board[7:]) and end) or board[6] > 24:
         score = 1000 + depth
     elif (sum(board[:7]) < sum(board[7:]) and end) or board[13] > 24:
-        score = -1000 - depth
+        score = -1000 + depth
     else:
         score = (board[6] - board[13])*3 + (sum(board[:7]) - sum(board[7:]))
 
@@ -106,56 +93,54 @@ def minimax(board, maxPlayer, depth, alpha, beta):
 
         return score, None
 
-    # Find possible moves from the board state
-    moves = findMoves(board,maxPlayer)
-
     if maxPlayer:
         bestScore = -100000000
         move = None
         # Calls minimax on all 6 possible moves
-        for i in moves:
-            # Finds next state when a move is chosen
-            futureBoard = getFutureState(i+1, board.copy(), maxPlayer)  
+        for i in range(6):
+            if board[i] != 0:
+                # Finds next state when a move is chosen
+                futureBoard = getFutureState(i+1, board.copy(), maxPlayer)  
 
-            # checks if bot gets an extra turn
-            if futureBoard[1]:
-                score = minimax(futureBoard[0], futureBoard[1], depth , alpha, beta)
-            else:
-                score = minimax(futureBoard[0], futureBoard[1], depth - 1, alpha, beta)               
+                # checks if bot gets an extra turn
+                if futureBoard[1]:
+                    score = minimax(futureBoard[0], futureBoard[1], depth , alpha, beta)
+                else:
+                    score = minimax(futureBoard[0], futureBoard[1], depth - 1, alpha, beta)               
 
-            if score[0] > bestScore:     
-                bestScore = score[0]
-                move = i+1
+                if score[0] > bestScore:     
+                    bestScore = score[0]
+                    move = i+1
 
-            alpha = max(alpha, bestScore)
-            # Alpha beta pruning
-            if beta <= alpha:
-                break
+                alpha = max(alpha, bestScore)
+                # Alpha beta pruning
+                if beta <= alpha:
+                    break
 
         return bestScore, move
 
     else:
-        bestScore = 10000000
+        bestScore = 10000
         move = None
         # Calls minimax on all 6 possible moves
-        for i in moves:
- 
-            # Finds next state when a move is chosen
-            futureBoard = getFutureState(i+8, board.copy(), maxPlayer)
-             # checks if bot gets an extra turn
-            if futureBoard[1] == False:
-                score = minimax(futureBoard[0], futureBoard[1], depth, alpha, beta ) 
-            else:
-                score = minimax(futureBoard[0], futureBoard[1], depth - 1, alpha, beta)               
+        for i in range(6):
+            if board[i+7] != 0:
+                # Finds next state when a move is chosen
+                futureBoard = getFutureState(i+8, board.copy(), maxPlayer)
+                # checks if bot gets an extra turn
+                if futureBoard[1] == False:
+                    score = minimax(futureBoard[0], futureBoard[1], depth, alpha, beta ) 
+                else:
+                    score = minimax(futureBoard[0], futureBoard[1], depth - 1, alpha, beta)               
 
-            if score[0] < bestScore:     
-                bestScore = score[0]
-                move = i+8
-            beta = min(beta, bestScore)
-            # Alpha beta pruning
-            if beta <= alpha:
-                break
-    return bestScore, move
+                if score[0] < bestScore:     
+                    bestScore = score[0]
+                    move = i+8
+                beta = min(beta, bestScore)
+                # Alpha beta pruning
+                if beta <= alpha:
+                    break
+        return bestScore, move
 
 # Gets the future state of the board
 def getFutureState(select, board, maxPlayer):
